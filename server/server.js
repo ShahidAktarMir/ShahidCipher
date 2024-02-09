@@ -1,9 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
-
-const app = express();
 const connectDB = require("./config/mongoose");
+const app = express();
+app.use(cors());
 dotenv.config();
 connectDB();
 app.use(express.json());

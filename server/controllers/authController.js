@@ -10,13 +10,11 @@ const registerUser = async (req, res) => {
   if (!error.isEmpty()) {
     return res.status(400).json({ error: error.array() });
   }
-
   const { username, email, password, name } = req.body;
-
   try {
     const user = await User.findOne({ email: email });
     if (user) {
-      return res.status(400).json({ error: [{ msg: "User already exists" }] });
+      return res.status(400).json({ msg: "User already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -31,7 +29,6 @@ const registerUser = async (req, res) => {
 
     await newUser.save();
     console.log(newUser);
-
     const payload = {
       user: {
         id: newUser._id,
@@ -44,7 +41,7 @@ const registerUser = async (req, res) => {
       { expiresIn: "1h" },
       (err, token) => {
         if (err) throw err;
-        res.status(200).json({ token });
+        res.status(200).json({ msg: "User Created Sucessfully", token });
       }
     );
   } catch (err) {
@@ -59,7 +56,7 @@ const login = async (req, res) => {
   try {
     let user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(400).json({ errors: [{ msg: "Invalid credentials" }] });
+      return res.status(400).json({ msg: "Invalid credentials" });
     }
 
     if (user.loginAttempts >= 5 && user.lockUntil > Date.now()) {
@@ -73,7 +70,7 @@ const login = async (req, res) => {
     if (!isMatch) {
       user.loginAttempts += 1;
       await user.save();
-      return res.status(400).json({ errors: [{ msg: "Invalid credentials" }] });
+      return res.status(400).json({ msg: "Invalid credentials" });
     }
 
     user.loginAttempts = 0;
@@ -91,7 +88,7 @@ const login = async (req, res) => {
       { expiresIn: "1h" },
       (err, token) => {
         if (err) throw err;
-        res.status(200).json({ token });
+        res.status(200).json({ msg: "User Login Sucessfully", token });
       }
     );
   } catch (err) {

@@ -1,7 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 const rateLimiting = require("../middleware/rateLimiting");
-const csrfProtection = require("../middleware/csrfProtection");
+
 const authController = require("../controllers/authController");
 const router = express.Router();
 
